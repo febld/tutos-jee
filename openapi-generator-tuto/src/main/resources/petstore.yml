@@ -1,0 +1,105 @@
+openapi: "3.0.3"
+info:
+  title: tuto de génération openapi
+  version: 0.0.1
+paths:
+  /pets:
+    get:
+      summary: List all pets
+      operationId: listPets
+      tags:
+        - pets
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            format: int32
+      #   ...
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref : '#/components/schemas/PetFullData'
+    post:
+      summary: Create a pet
+      operationId: createPets
+      #...
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/Pet'
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PetFullData'
+  /pets/{petId}:
+    get:
+      summary: Info for a specific pet
+      operationId: showPetById
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          description: pet identifier
+          schema:
+            type: string
+      #...
+      responses:
+        '200':
+          description: OK
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PetFullData'
+        '404':
+          description: NOT FOUND
+components:
+  schemas:
+    Pet:
+      type: object
+      required:
+        - name
+        - race
+        - age
+        - sexe
+      properties:
+        name:
+          type: string
+        race:
+          type: string
+        age:
+          type: integer
+          format: int32
+        sexe:
+          type: string
+    PetFullData:
+      allOf:
+        - $ref: '#/components/schemas/Pet'
+        - type: object
+          properties:
+            petId:
+              type: integer
+              description: the id of the pet
+              format: int64
+      description: Full data of the pet
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
